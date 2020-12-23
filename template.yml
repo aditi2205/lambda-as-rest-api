@@ -2,56 +2,7 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
 Description: An AWS Lambda application that calls the Lambda API.
 
-#Mappings:
-#  Environments:
-#    dev:
-#      DomainTld: ccp.sp-ppd.a.intuit.com
-#      RegionalCertificateArnId: c2bc1e59-d34e-4d2d-b4cb-040c218f4020
-#    sys:
-#      DomainTld: ccp.sp-ppd.a.intuit.com
-#      RegionalCertificateArnId: c2bc1e59-d34e-4d2d-b4cb-040c218f4020
-#    prf:
-#      DomainTld: ccp.sp-ppd.a.intuit.com
-#      RegionalCertificateArnId: c2bc1e59-d34e-4d2d-b4cb-040c218f4020
-#    prd:
-#      DomainTld: ccp.sp.a.intuit.com
-#      RegionalCertificateArnId: a3379fb2-ef06-4f7f-8111-693e265916f8
 Resources:
-
-#  ApiGWDomain:
-#    Type: AWS::ApiGateway::DomainName
-#    Properties:
-#      RegionalCertificateArn: !Sub
-#      - arn:aws:acm:${AWS::Region}:${AWS::AccountId}:certificate/${RegionalCertificateArnId}
-#      - RegionalCertificateArnId: !FindInMap [Environments, !Ref EnvironmentName, RegionalCertificateArnId]
-#      DomainName: !Sub
-#      - secure-payment-getsecuretoken-${EnvironmentName}.${DomainTld}
-#      - DomainTld: !FindInMap [Environments, !Ref EnvironmentName, DomainTld]
-#      EndpointConfiguration:
-#        Types:
-#        - REGIONAL
-#
-#  ApiGWMapping:
-#    Type: AWS::ApiGateway::BasePathMapping
-#    DependsOn:
-#    - ApiGWDomain
-#    Properties:
-#      DomainName: !Sub
-#      - secure-payment-getsecuretoken-${EnvironmentName}.${DomainTld}
-#      - DomainTld: !FindInMap [Environments, !Ref EnvironmentName, DomainTld]
-#      RestApiId: !Ref Api
-#      Stage: !Ref Api.Stage
-
-#  # Route53 - Hosted Zone CName #
-#  ApiGwRecordSet:
-#    Type: AWS::Route53::RecordSet
-#    Properties:
-#      HostedZoneName: !Sub ${AwsHostedZone}.
-#      Name: !Sub secure-payment-getsecuretoken-${EnvironmentName}.${AwsHostedZone}
-#      Type: CNAME
-#      TTL: 30
-#      ResourceRecords:
-#      - !GetAtt ApiGWDomain.RegionalDomainName
 
   Api:
     Type: AWS::Serverless::Api
