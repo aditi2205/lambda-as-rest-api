@@ -30,4 +30,4 @@ Deploy AWS lambda function as a rest api in java
 1) Clone this repository
 2) Execute the create-bucket.sh file (./create-bucket.sh)
 3) Execute the deploy.sh file (./deploy.sh)
-4) Follow this tutorial to  visualize the results: 
+4) Follow this tutorial to  visualize the results: https://aditi22aggarwal-23582.medium.com/deploy-aws-lambda-as-a-rest-api-java-bee07b800edc
