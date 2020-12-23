@@ -4,9 +4,13 @@ Deploy AWS lambda function as a rest api in java
 ### The project source includes function code and supporting resources:
 
 `src/main` - A Java function.
+
 `template.yml` - An AWS CloudFormation template that creates an application.
-pom.xml - A Maven build file.
+
+`pom.xml` - A Maven build file.
+
 `create-bucket.sh` - Shell script to create an AWS bucket
+
 `deploy.sh` - Shell script to generate the build package and deploy it to AWS cloudformation
 
 ### Use the following instructions to deploy the sample application.
