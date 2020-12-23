@@ -1,0 +1,139 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: An AWS Lambda application that calls the Lambda API.
+
+#Mappings:
+#  Environments:
+#    dev:
+#      DomainTld: ccp.sp-ppd.a.intuit.com
+#      RegionalCertificateArnId: c2bc1e59-d34e-4d2d-b4cb-040c218f4020
+#    sys:
+#      DomainTld: ccp.sp-ppd.a.intuit.com
+#      RegionalCertificateArnId: c2bc1e59-d34e-4d2d-b4cb-040c218f4020
+#    prf:
+#      DomainTld: ccp.sp-ppd.a.intuit.com
+#      RegionalCertificateArnId: c2bc1e59-d34e-4d2d-b4cb-040c218f4020
+#    prd:
+#      DomainTld: ccp.sp.a.intuit.com
+#      RegionalCertificateArnId: a3379fb2-ef06-4f7f-8111-693e265916f8
+Resources:
+
+#  ApiGWDomain:
+#    Type: AWS::ApiGateway::DomainName
+#    Properties:
+#      RegionalCertificateArn: !Sub
+#      - arn:aws:acm:${AWS::Region}:${AWS::AccountId}:certificate/${RegionalCertificateArnId}
+#      - RegionalCertificateArnId: !FindInMap [Environments, !Ref EnvironmentName, RegionalCertificateArnId]
+#      DomainName: !Sub
+#      - secure-payment-getsecuretoken-${EnvironmentName}.${DomainTld}
+#      - DomainTld: !FindInMap [Environments, !Ref EnvironmentName, DomainTld]
+#      EndpointConfiguration:
+#        Types:
+#        - REGIONAL
+#
+#  ApiGWMapping:
+#    Type: AWS::ApiGateway::BasePathMapping
+#    DependsOn:
+#    - ApiGWDomain
+#    Properties:
+#      DomainName: !Sub
+#      - secure-payment-getsecuretoken-${EnvironmentName}.${DomainTld}
+#      - DomainTld: !FindInMap [Environments, !Ref EnvironmentName, DomainTld]
+#      RestApiId: !Ref Api
+#      Stage: !Ref Api.Stage
+
+#  # Route53 - Hosted Zone CName #
+#  ApiGwRecordSet:
+#    Type: AWS::Route53::RecordSet
+#    Properties:
+#      HostedZoneName: !Sub ${AwsHostedZone}.
+#      Name: !Sub secure-payment-getsecuretoken-${EnvironmentName}.${AwsHostedZone}
+#      Type: CNAME
+#      TTL: 30
+#      ResourceRecords:
+#      - !GetAtt ApiGWDomain.RegionalDomainName
+
+  Api:
+    Type: AWS::Serverless::Api
+    Name: lambda-as-rest-api
+    Properties:
+      StageName: test
+      DefinitionBody:
+        swagger: '2.0'
+        info:
+          title:
+            Ref: 'AWS::StackName'
+        paths:
+          /greeting:
+            options:
+              x-amazon-apigateway-integration:
+                type: mock
+                requestTemplates:
+                  application/json: '{ "statusCode" : 200 }'
+                responses:
+                  default:
+                    statusCode: 200
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Headers: '''Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'''
+                      method.response.header.Access-Control-Allow-Methods: '''options,get,post,delete,head,patch,put'''
+                      method.response.header.Access-Control-Allow-Origin: '''*'''
+                    responseTemplates:
+                      application/json: '{}'
+              responses:
+                '200':
+                  headers:
+                    Access-Control-Allow-Headers:
+                      type: string
+                    Access-Control-Allow-Methods:
+                      type: string
+                    Access-Control-Allow-Origin:
+                      type: string
+            post:
+              produces:
+              - "application/json"
+              responses:
+                "200":
+                  description: "200 response"
+                  headers:
+                    Access-Control-Allow-Origin:
+                      type: "string"
+                    Access-Control-Allow-Methods:
+                      type: "string"
+                    Access-Control-Allow-Headers:
+                      type: "string"
+              x-amazon-apigateway-integration:
+                uri:
+                  'Fn::Sub': >-
+                    arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${function.Arn}/invocations
+                responses:
+                  default:
+                    statusCode: "200"
+                passthroughBehavior: "when_no_match"
+                httpMethod: "POST"
+                contentHandling: "CONVERT_TO_TEXT"
+                type: "aws"
+
+  ApiGwStageDeploy:
+    Type: AWS::ApiGateway::Deployment
+    Properties:
+      RestApiId: !Ref Api
+      Description: Create a lambda as rest API
+      StageName: !Ref Api.Stage
+
+  function:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: target/lambda-as-rest-api-1.0-SNAPSHOT.jar
+      Handler: com.demo.lambda.LambdaHandler::handleRequest
+      FunctionName: lambda-as-rest-api
+      Runtime: java8
+      Description: Java function
+      MemorySize: 512
+      Timeout: 10
+      # Function's execution role
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - AWSLambdaReadOnlyAccess
+        - AWSXrayWriteOnlyAccess
+        - AWSLambdaVPCAccessExecutionRole
+      Tracing: Active
