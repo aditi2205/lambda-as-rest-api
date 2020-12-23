@@ -18,13 +18,10 @@ Deploy AWS lambda function as a rest api in java
 ### Use the following instructions to deploy the sample application.
 
 #### Requirements
-  Java 8 runtime environment (SE JRE)
-  
-  Maven 3
-  
-  The Bash shell. For Linux and macOS, this is included by default. In Windows 10, you can install the Windows Subsystem for Linux to get a Windows-integrated version of Ubuntu and Bash.
-  
-  The AWS CLI v1.17 or newer.
+  1) Java 8 runtime environment (SE JRE)
+  2) Maven 3
+  3) The Bash shell. For Linux and macOS, this is included by default. In Windows 10, you can install the Windows Subsystem for Linux to get a Windows-integrated version of Ubuntu and Bash.
+  4) The AWS CLI v1.17 or newer.
 
 #### Steps to execute
 1) Clone this repository
